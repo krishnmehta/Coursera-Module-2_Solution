@@ -1,33 +1,39 @@
+using System;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 
-namespace GradeBook{
-    class Book{
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        Console.WriteLine("Enter the URL to download from:");
+        string url = Console.ReadLine();
 
-        public Book(String name){
-            grades = new List<double>();
-            this.name = name;
+        Console.WriteLine("Downloading...");
+        string content = await DownloadContentAsync(url);
+
+        Console.WriteLine("Enter the filename to save to:");
+        string filename = Console.ReadLine();
+
+        await WriteContentToFileAsync(filename, content);
+
+        Console.WriteLine("Done!");
+    }
+
+    static async Task<string> DownloadContentAsync(string url)
+    {
+        using (var client = new WebClient())
+        {
+            return await client.DownloadStringTaskAsync(url);
         }
-        public void AddGrade(double grade){
-            grades.Add(grade);
+    }
+
+    static async Task WriteContentToFileAsync(string filename, string content)
+    {
+        using (var writer = new StreamWriter(filename))
+        {
+            await writer.WriteAsync(content);
         }
-
-        public void ShowStatistics(){
-            var result = 0.0;
-            var highgrade = double.MinValue;
-            var lowgrade = double.MaxValue;
-
-            foreach(var number in grades){
-                lowgrade = Math.Min(number, lowgrade);
-                highgrade = Math.Max(number, highgrade);
-                result += number;
-            }
-            result /= grades.Count;
-            Console.WriteLine($"The lowest grade is {lowgrade}");
-            Console.WriteLine($"The highest grade is {highgrade}");
-            Console.WriteLine($"The average grade is {result:N2}");
-        }
-        
-        private List<double> grades;
-        private String name;
-
     }
 }
