@@ -1,90 +1,62 @@
 using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Collections;
+using System.IO;
+using System.Threading.Tasks;
 
-namespace Assignment4 // Note: actual namespace depends on the project name.
+public class BackgroundOperation
 {
-    public class Program
+    public async Task WriteToFileAsync(string message)
     {
-        IList employeeList;
-        IList salaryList;
+        await Task.Delay(3000);
+        await File.WriteAllTextAsync("tmp.txt", message);
+    }
+}
 
-        public Program()
-        {
-            employeeList = new List<Employee> {
-            new Employee(){ EmployeeID = 1, EmployeeFirstName = "Rajiv", EmployeeLastName = "Desai", Age = 49},
-            new Employee(){ EmployeeID = 2, EmployeeFirstName = "Karan", EmployeeLastName = "Patel", Age = 32},
-            new Employee(){ EmployeeID = 3, EmployeeFirstName = "Sujit", EmployeeLastName = "Dixit", Age = 28},
-            new Employee(){ EmployeeID = 4, EmployeeFirstName = "Mahendra", EmployeeLastName = "Suri", Age = 26},
-            new Employee(){ EmployeeID = 5, EmployeeFirstName = "Divya", EmployeeLastName = "Das", Age = 20},
-            new Employee(){ EmployeeID = 6, EmployeeFirstName = "Ridhi", EmployeeLastName = "Shah", Age = 60},
-            new Employee(){ EmployeeID = 7, EmployeeFirstName = "Dimple", EmployeeLastName = "Bhatt", Age = 53}
-        };
+public class KioskSystem
+{
+    private readonly BackgroundOperation _backgroundOperation;
 
-            salaryList = new List<Salary> {
-            new Salary(){ EmployeeID = 1, Amount = 1000, Type = SalaryType.Monthly},
-            new Salary(){ EmployeeID = 1, Amount = 500, Type = SalaryType.Performance},
-            new Salary(){ EmployeeID = 1, Amount = 100, Type = SalaryType.Bonus},
-            new Salary(){ EmployeeID = 2, Amount = 3000, Type = SalaryType.Monthly},
-            new Salary(){ EmployeeID = 2, Amount = 1000, Type = SalaryType.Bonus},
-            new Salary(){ EmployeeID = 3, Amount = 1500, Type = SalaryType.Monthly},
-            new Salary(){ EmployeeID = 4, Amount = 2100, Type = SalaryType.Monthly},
-            new Salary(){ EmployeeID = 5, Amount = 2800, Type = SalaryType.Monthly},
-            new Salary(){ EmployeeID = 5, Amount = 600, Type = SalaryType.Performance},
-            new Salary(){ EmployeeID = 5, Amount = 500, Type = SalaryType.Bonus},
-            new Salary(){ EmployeeID = 6, Amount = 3000, Type = SalaryType.Monthly},
-            new Salary(){ EmployeeID = 6, Amount = 400, Type = SalaryType.Performance},
-            new Salary(){ EmployeeID = 7, Amount = 4700, Type = SalaryType.Monthly}
-        };
-        }
-
-        public static void Main(string[] args)
-        {
-            Program program = new Program();
-
-            program.Task1();
-
-            program.Task2();
-
-            program.Task3();
-        }
-
-        public void Task1()
-        {
-            //Implementation
-        }
-
-        public void Task2()
-        {
-            //Implementation
-        }
-
-        public void Task3()
-        {
-            //Implementation
-        }
+    public KioskSystem()
+    {
+        _backgroundOperation = new BackgroundOperation();
     }
 
-    public enum SalaryType
+    public async Task RunAsync()
     {
-        Monthly,
-        Performance,
-        Bonus
-    }
+        while (true)
+        {
+            Console.WriteLine("Please select an option:");
+            Console.WriteLine("1. Write \"Hello World\"");
+            Console.WriteLine("2. Write Current Date");
+            Console.WriteLine("3. Write OS Version");
+            string input = Console.ReadLine();
 
-    public class Employee
-    {
-        public int EmployeeID { get; set; }
-        public string EmployeeFirstName { get; set; }
-        public string EmployeeLastName { get; set; }
-        public int Age { get; set; }
+            switch (input)
+            {
+                case "1":
+                    await _backgroundOperation.WriteToFileAsync("Hello World");
+                    Console.WriteLine("Done writing to file.");
+                    break;
+                case "2":
+                    await _backgroundOperation.WriteToFileAsync(DateTime.Now.ToString());
+                    Console.WriteLine("Done writing to file.");
+                    break;
+                case "3":
+                    await _backgroundOperation.WriteToFileAsync(Environment.OSVersion.VersionString);
+                    Console.WriteLine("Done writing to file.");
+                    break;
+                default:
+                    Console.WriteLine("Invalid input.");
+                    break;
+            }
+        }
     }
+}
 
-    public class Salary
+public class Program
+{
+    public static async Task Main(string[] args)
     {
-        public int EmployeeID { get; set; }
-        public int Amount { get; set; }
-        public SalaryType Type { get; set; }
+        var kioskSystem = new KioskSystem();
+        await kioskSystem.RunAsync();
     }
 }
