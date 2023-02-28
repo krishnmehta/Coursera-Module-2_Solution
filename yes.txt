@@ -1,0 +1,24 @@
+from geopy.geocoders import Nominatim
+
+# Initialize Nominatim API
+geolocator = Nominatim(user_agent="geoapiExercises")
+
+# Get location using current address
+location = geolocator.geocode("current location")
+
+# Extract latitude and longitude
+latitude = location.latitude
+longitude = location.longitude
+print(f"Latitude: {latitude}, Longitude: {longitude}")
+
+
+
+//New line
+from timezonefinder import TimezoneFinder
+
+# Initialize TimezoneFinder
+tf = TimezoneFinder()
+
+# Get timezone using latitude and longitude
+timezone = tf.timezone_at(lat=latitude, lng=longitude)
+print(f"Timezone: {timezone}")
